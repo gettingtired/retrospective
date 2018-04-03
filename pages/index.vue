@@ -25,7 +25,7 @@
         <v-card v-for="tweet in tweets" :key="tweet._id" style="padding: 10px; margin: 10px 0px;">
           <v-card-title primary-title>
             <div>
-              <h3 class="headline mb-0">{{ tweet.sender }}</h3>
+              <h3 class="headline mb-0">{{ tweet.sender | isAnonymous }}</h3>
               <div v-html="highlight(tweet.tweet)"></div>
             </div>
           </v-card-title>
@@ -49,6 +49,19 @@
           sender: undefined
         },
         tweets: []
+      }
+    },
+    filters: {
+      isAnonymous (name) {
+        if (!name) {
+          return 'anonymous'
+        }
+
+        if (name.length === 0) {
+          return 'anonymous'
+        }
+
+        return name
       }
     },
     methods: {
@@ -83,7 +96,6 @@
           .catch(error => console.error(error))
       },
       highlight (tweetMessage) {
-        console.log(tweetMessage)
         const hashtag = /\B(#[a-zA-Z0-9]+\b)/g
         return tweetMessage.replace(hashtag, (tag) => {
           return `<span class="blue--text text--lighten-2 body-2">${tag}</span>`
